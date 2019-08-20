@@ -6,7 +6,7 @@ VOLUME /tmp
 
 COPY ["src/docker/create-user.sh", "src/docker/startup.sh", "/usr/bin/"]
 
-ADD target/store-1.0-SNAPSHOT.jar /home/java/app.jar
+ADD target/store-0.0.1-SNAPSHOT.jar /home/java/app.jar
 
 RUN chmod +x /usr/bin/create-user.sh
 
