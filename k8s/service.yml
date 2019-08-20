@@ -2,12 +2,12 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: store
+    app: hotspot-store
     version: version-0.1
     stage: dev
     rel: beta
     owner: dex-dev
-  name: store
+  name: hotspot-store
   #namespace: dex-dev
 spec:
   ports:
@@ -15,4 +15,4 @@ spec:
       protocol: TCP
       targetPort: 8080
   selector:
-    app: store
+    app: hotspot-store

@@ -1,9 +1,9 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: store
+  name: hotspot-store
   labels:
-    app: store
+    app: hotspot-store
     version: version-0.1
     stage: dev
     rel: beta
@@ -12,14 +12,14 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: store
+      app: hotspot-store
   template:
     metadata:
       labels:
-        app: store
+        app: hotspot-store
     spec:
       containers:
-        - name: store
+        - name: hotspot-store
           image: dep-dev-registry.cloudzcp.io/hot-spot/store:0.1
       imagePullSecrets:
         - name: jonas-secret
