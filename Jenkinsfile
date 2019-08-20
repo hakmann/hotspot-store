@@ -15,7 +15,7 @@ podTemplate(label:label,
             containerTemplate(name: 'docker', image: 'docker:17-dind', ttyEnabled: true, command: 'dockerd-entrypoint.sh', privileged: true),
             // containerTemplate(name: 'kubectl', image: 'dep-dev-registry.cloudzcp.io/cloudz/k8s-kubectl:v1.9.9', ttyEnabled: true, command: 'cat')
             containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl:v1.13.6', ttyEnabled: true, command: 'cat')
-        ]
+        ],
     volumes: [
         hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
         persistentVolumeClaim(mountPath: '/root/.m2', claimName: 'zcp-jenkins-mvn-repo')
