@@ -17,7 +17,7 @@ public class StoreController implements StoreService{
 
     @Override
     @GetMapping("/find/location/{x}/{y}")
-    public List<Store> findStoreByCurrentLocation(@PathVariable("x") float x, @PathVariable("y") float y) {
+    public String findStoreByCurrentLocation(@PathVariable("x") float x, @PathVariable("y") float y) {
         return storeService.findStoreByCurrentLocation(x,y);
     }
 
@@ -37,5 +37,12 @@ public class StoreController implements StoreService{
     @GetMapping(value = "/find/category/{category}")
     public List<Store> findStoreByCategory(@PathVariable("category") String category) {
         return storeService.findStoreByCategory(category);
+    }
+
+    @Override
+    @PostMapping(value = "/register/external/rows/{numOfRows}")
+    public List<Store> registerStoreInfoFromOpenApi(@PathVariable("numOfRows") Integer numOfRows) {
+        storeService.registerStoreInfoFromOpenApi(numOfRows);
+        return null;
     }
 }

@@ -7,13 +7,17 @@ logging:
   level:
     root: DEBUG
 
+external:
+  servicekey: HBL%2FY0u39MG3pXAvaoRngGVc96fOUxmYD2aLu6L0MCCZjDure7gOD2e1ikw0kjRkPg%2F2pu9J0znei3JR1Geq3g%3D%3D
+  host: http://apis.data.go.kr/B553077/api/open/sdsc
+
 --- # production
 spring:
   profiles: prod
   #application:
     #basePath: /
   jpa:
-    hibernate.ddl-auto: create
+    hibernate.ddl-auto: update
     show-sql: true
     properties.hibernate.format_sql: true
   datasource:
@@ -32,7 +36,7 @@ spring:
   application:
     basePath: /swagger-ui.html
   jpa:
-    hibernate.ddl-auto: create
+    hibernate.ddl-auto: update
     show-sql: true
     properties.hibernate.format_sql: true
   datasource:
