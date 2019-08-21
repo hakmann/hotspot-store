@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 public class StoreServiceImpl implements StoreService {
 
     private static final Logger log = LoggerFactory.getLogger(StoreServiceImpl.class);
+    private static final Integer MAX_NUM_OF_ROWS = 1000;
 
     @Autowired
     private StoreRepository storeRepository;
@@ -40,7 +41,7 @@ public class StoreServiceImpl implements StoreService {
     private String findApiByCategory = "/storeListInUpjong";
 
     @Override
-    public String findStoreByCurrentLocation(float x, float y) {
+    public String findStoreByCurrentLocationByOpenApi(float x, float y) {
         //TODO: 외부 API사용하도록 변경
         ClientHttpRequestFactory requestFactory = getClientHttpRequestFactory();
         RestTemplate restTemplate = new RestTemplate(requestFactory);
@@ -95,7 +96,8 @@ public class StoreServiceImpl implements StoreService {
         requestParamMap.add("type", "json");
         requestParamMap.add("divId", "indsLclsCd");
         requestParamMap.add("key", "Q");
-        requestParamMap.add("numOfRows", String.valueOf(numOfRows));
+        // 최대 요청건수 1000건
+        requestParamMap.add("numOfRows", String.valueOf(numOfRows > MAX_NUM_OF_ROWS ? MAX_NUM_OF_ROWS : numOfRows));
         uriComponentsBuilder.queryParams(requestParamMap);
         URI uri = uriComponentsBuilder.build(true).toUri();
 
@@ -109,20 +111,36 @@ public class StoreServiceImpl implements StoreService {
         ArrayList collect = (ArrayList) items.stream()
                 .map(item -> {
                     LinkedTreeMap itemMap = (LinkedTreeMap) item;
-                    return Store.builder()
-                            .name(itemMap.get("bizesNm").toString())
-                            .category(itemMap.get("indsSclsNm").toString())
-                            .eId(Long.valueOf(itemMap.get("bizesId").toString()))
-                            .cX(Float.valueOf((itemMap.get("lon").toString())))
-                            .cY(Float.valueOf((itemMap.get("lat").toString())))
-                            .lnoAdr(itemMap.get("lnoAdr").toString())
-                            .rdnmAdr(itemMap.get("rdnmAdr").toString())
-                            .build();
+                    Store storeByEid = storeRepository.findByeId(Long.valueOf(itemMap.get("bizesId").toString()));
+                    if (storeByEid != null ){
+                        storeByEid.setName(itemMap.get("bizesNm").toString());
+                        storeByEid.setCategory(itemMap.get("indsSclsNm").toString());
+                        storeByEid.setCX(Float.valueOf((itemMap.get("lon").toString())));
+                        storeByEid.setCY(Float.valueOf((itemMap.get("lat").toString())));
+                        storeByEid.setLnoAdr(itemMap.get("lnoAdr").toString());
+                        storeByEid.setRdnmAdr(itemMap.get("rdnmAdr").toString());
+                        return storeByEid;
+                    }else{
+                        return Store.builder()
+                                .name(itemMap.get("bizesNm").toString())
+                                .category(itemMap.get("indsSclsNm").toString())
+                                .eId(Long.valueOf(itemMap.get("bizesId").toString()))
+                                .cX(Float.valueOf((itemMap.get("lon").toString())))
+                                .cY(Float.valueOf((itemMap.get("lat").toString())))
+                                .lnoAdr(itemMap.get("lnoAdr").toString())
+                                .rdnmAdr(itemMap.get("rdnmAdr").toString())
+                                .build();
+                    }
                 }).collect(Collectors.toList());
 
         storeRepository.saveAll(collect);
 
         return collect;
+    }
+
+    @Override
+    public List<Store> findStoreByCurrentLocation(float x, float y) {
+        return storeRepository.findByLocation(x - 0.01f, x + 0.01f, y - 0.01f, y + 0.01f);
     }
 
     private ClientHttpRequestFactory getClientHttpRequestFactory() {

@@ -16,9 +16,9 @@ public class StoreController implements StoreService{
     private StoreService storeService;
 
     @Override
-    @GetMapping("/find/location/{x}/{y}")
-    public String findStoreByCurrentLocation(@PathVariable("x") float x, @PathVariable("y") float y) {
-        return storeService.findStoreByCurrentLocation(x,y);
+    @GetMapping("/find/location/openapi/{x}/{y}")
+    public String findStoreByCurrentLocationByOpenApi(@PathVariable("x") float x, @PathVariable("y") float y) {
+        return storeService.findStoreByCurrentLocationByOpenApi(x,y);
     }
 
     @Override
@@ -44,5 +44,11 @@ public class StoreController implements StoreService{
     public List<Store> registerStoreInfoFromOpenApi(@PathVariable("numOfRows") Integer numOfRows) {
         storeService.registerStoreInfoFromOpenApi(numOfRows);
         return null;
+    }
+
+    @Override
+    @GetMapping(value = "/find/location/{x}/{y}")
+    public List<Store> findStoreByCurrentLocation(@PathVariable("x") float x, @PathVariable("y") float y) {
+        return storeService.findStoreByCurrentLocation(x, y);
     }
 }
