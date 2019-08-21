@@ -20,6 +20,6 @@ spec:
     spec:
       containers:
         - name: hotspot-store
-          image: dep-dev-registry.cloudzcp.io/hot-spot/store:0.1
+          image: dep-dev-registry.cloudzcp.io/hotspot/store:0.1
       imagePullSecrets:
         - name: jonas-secret
