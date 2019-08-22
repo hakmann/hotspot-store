@@ -20,6 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,7 +43,6 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public String findStoreByCurrentLocationByOpenApi(float x, float y) {
-        //TODO: 외부 API사용하도록 변경
         ClientHttpRequestFactory requestFactory = getClientHttpRequestFactory();
         RestTemplate restTemplate = new RestTemplate(requestFactory);
 
@@ -71,6 +71,8 @@ public class StoreServiceImpl implements StoreService {
                 .category(store.getCategory())
                 .cX(store.getCX())
                 .cY(store.getCY())
+                .rdnmAdr(Optional.of(store.getRdnmAdr()).orElse(""))
+                .lnoAdr(Optional.of(store.getLnoAdr()).orElse(""))
                 .build();
         return storeRepository.save(entity);
     }
@@ -86,7 +88,24 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public List<Store> registerStoreInfoFromOpenApi(Integer numOfRows) {
+    public List<Store> registerStoreInfoFromOpenApi(Integer numOfRows, Integer page) {
+        Integer index = 1;
+        List<Store> savedStore = new ArrayList<>();
+        while(index <= page){
+            String response = callOpenApiFindStoreInfoByCode(numOfRows, index);
+            savedStore.addAll(parseResponseToSaveStore(response));
+            index++;
+        }
+        storeRepository.saveAll(savedStore);
+        return savedStore;
+    }
+
+    @Override
+    public List<Store> findStoreByCurrentLocation(float x, float y) {
+        return storeRepository.findByLocation(x - 0.01f, x + 0.01f, y - 0.01f, y + 0.01f);
+    }
+
+    private String callOpenApiFindStoreInfoByCode(Integer numOfRows, Integer pageNo) {
         ClientHttpRequestFactory requestFactory = getClientHttpRequestFactory();
         RestTemplate restTemplate = new RestTemplate(requestFactory);
 
@@ -98,12 +117,14 @@ public class StoreServiceImpl implements StoreService {
         requestParamMap.add("key", "Q");
         // 최대 요청건수 1000건
         requestParamMap.add("numOfRows", String.valueOf(numOfRows > MAX_NUM_OF_ROWS ? MAX_NUM_OF_ROWS : numOfRows));
+        requestParamMap.add("pageNo", String.valueOf(pageNo));
         uriComponentsBuilder.queryParams(requestParamMap);
         URI uri = uriComponentsBuilder.build(true).toUri();
 
-        String response = restTemplate.getForObject(uri, String.class);
-        log.debug(response);
+        return restTemplate.getForObject(uri, String.class);
+    }
 
+    private List<Store> parseResponseToSaveStore(String response) {
         Gson gson = new Gson();
         LinkedTreeMap resultMap = gson.fromJson(response, LinkedTreeMap.class);
         LinkedTreeMap body = (LinkedTreeMap) resultMap.get("body");
@@ -133,14 +154,7 @@ public class StoreServiceImpl implements StoreService {
                     }
                 }).collect(Collectors.toList());
 
-        storeRepository.saveAll(collect);
-
-        return collect;
-    }
-
-    @Override
-    public List<Store> findStoreByCurrentLocation(float x, float y) {
-        return storeRepository.findByLocation(x - 0.01f, x + 0.01f, y - 0.01f, y + 0.01f);
+        return (List<Store>) collect;
     }
 
     private ClientHttpRequestFactory getClientHttpRequestFactory() {

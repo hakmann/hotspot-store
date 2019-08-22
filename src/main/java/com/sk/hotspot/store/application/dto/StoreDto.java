@@ -15,4 +15,7 @@ public class StoreDto {
     private float cX;
     private float cY;
 
+    private String lnoAdr; // 지번주소
+    private String rdnmAdr; // 도로명주소
+
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/store")
@@ -40,9 +41,9 @@ public class StoreController implements StoreService{
     }
 
     @Override
-    @PostMapping(value = "/register/external/rows/{numOfRows}")
-    public List<Store> registerStoreInfoFromOpenApi(@PathVariable("numOfRows") Integer numOfRows) {
-        storeService.registerStoreInfoFromOpenApi(numOfRows);
+    @PostMapping(value = "/register/openapi/rows/{numOfRows}")
+    public List<Store> registerStoreInfoFromOpenApi(@PathVariable("numOfRows") Integer numOfRows, @RequestParam("pageNo") Integer pageNo) {
+        storeService.registerStoreInfoFromOpenApi(numOfRows, Optional.of(pageNo).orElse(1));
         return null;
     }
 
