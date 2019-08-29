@@ -40,7 +40,7 @@ spring:
     show-sql: true
     properties.hibernate.format_sql: true
   datasource:
-    url: jdbc:mariadb://localhost:3306/depd
+    url: jdbc:mariadb://localhost:3306/store
     username: root
     password: root
 logging:
