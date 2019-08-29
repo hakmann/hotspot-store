@@ -10,35 +10,35 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/store")
+@RequestMapping("/api/v1")
 public class StoreController implements StoreService{
 
     @Autowired
     private StoreService storeService;
 
-    @Override
-    @GetMapping("/find/location/openapi/{x}/{y}")
-    public String findStoreByCurrentLocationByOpenApi(@PathVariable("x") float x, @PathVariable("y") float y) {
-        return storeService.findStoreByCurrentLocationByOpenApi(x,y);
-    }
+//    @Override
+//    @GetMapping("/find/location/openapi/{x}/{y}")
+//    public String findStoreByCurrentLocationByOpenApi(@PathVariable("x") float x, @PathVariable("y") float y) {
+//        return storeService.findStoreByCurrentLocationByOpenApi(x,y);
+//    }
+
+//    @Override
+//    @PostMapping(value = "/register")
+//    public Store registerStoreInfo(@RequestBody StoreDto store) {
+//        return storeService.registerStoreInfo(store);
+//    }
 
     @Override
-    @PostMapping(value = "/register")
-    public Store registerStoreInfo(@RequestBody StoreDto store) {
-        return storeService.registerStoreInfo(store);
-    }
-
-    @Override
-    @GetMapping(value = "/find/name/{store}")
-    public Store findStoreByName(@PathVariable("store") String name) {
+    @GetMapping(value = "/name/{store}")
+    public List<Store> findStoreByName(@PathVariable("store") String name) {
         return storeService.findStoreByName(name);
     }
 
-    @Override
-    @GetMapping(value = "/find/category/{category}")
-    public List<Store> findStoreByCategory(@PathVariable("category") String category) {
-        return storeService.findStoreByCategory(category);
-    }
+//    @Override
+//    @GetMapping(value = "/find/category/{category}")
+//    public List<Store> findStoreByCategory(@PathVariable("category") String category) {
+//        return storeService.findStoreByCategory(category);
+//    }
 
     @Override
     @PostMapping(value = "/register/openapi/rows/{numOfRows}")
@@ -48,7 +48,7 @@ public class StoreController implements StoreService{
     }
 
     @Override
-    @GetMapping(value = "/find/location/{x}/{y}")
+    @GetMapping(value = "/location/{x}/{y}")
     public List<Store> findStoreByCurrentLocation(@PathVariable("x") float x, @PathVariable("y") float y) {
         return storeService.findStoreByCurrentLocation(x, y);
     }

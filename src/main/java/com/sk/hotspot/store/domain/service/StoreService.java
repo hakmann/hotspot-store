@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface StoreService {
-    String findStoreByCurrentLocationByOpenApi(float x, float y);
-    Store registerStoreInfo(StoreDto store);
-    Store findStoreByName(String name);
-    List<Store> findStoreByCategory(String category);
+    //String findStoreByCurrentLocationByOpenApi(float x, float y);
+    //Store registerStoreInfo(StoreDto store);
+    List<Store> findStoreByName(String name);
+    //List<Store> findStoreByCategory(String category);
 
     List<Store> registerStoreInfoFromOpenApi(Integer numOfRows, Integer page);
 

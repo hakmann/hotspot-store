@@ -12,7 +12,7 @@ public interface StoreRepository extends PagingAndSortingRepository<Store,Long> 
     //
     @Query("SELECT s FROM Store s WHERE s.cX BETWEEN ?1 AND ?2 AND s.cY BETWEEN ?3 AND ?4")
     List<Store> findByLocation (float cx1, float cx2, float cx3, float cx4);
-    Store findByName(String name);
+    List<Store> findByNameContaining(String name);
     List<Store> findByCategory(String category);
 
     Store findByeId(Long eId);
